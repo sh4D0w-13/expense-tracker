@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+import cors from "cors";
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const express = require("express");
@@ -9,7 +11,12 @@ const cors = require("cors");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://expense-tracker-navy-gamma-34.vercel.app/",
+  }),
+);
 
 const verifyToken = (req, res, next) => {
   const bearerHeader = req.headers["authorization"];
