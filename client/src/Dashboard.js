@@ -4,6 +4,11 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
   const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
   const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
 
@@ -32,7 +37,7 @@ function Dashboard() {
   const fetchExpenses = () => {
     const token = localStorage.getItem("token");
 
-    fetch("https://expense-tracker-api-bis4.onrender.com/", {
+    fetch("https://expense-tracker-api-bis4.onrender.com/api/expenses", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,7 +57,7 @@ function Dashboard() {
 
     const token = localStorage.getItem("token");
 
-    fetch("https://expense-tracker-api-bis4.onrender.com/", {
+    fetch("https://expense-tracker-api-bis4.onrender.com/api/expenses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,20 +82,19 @@ function Dashboard() {
 
   //delete button function
   const handleDelete = (id) => {
-    fetch(`https://expense-tracker-api-bis4.onrender.com/${id}`, {
+    const token = localStorage.getItem("token");
+
+    fetch(`https://expense-tracker-api-bis4.onrender.com/api/expenses/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then(() => {
-        fetchExpenses(); // 🔥 refresh UI
+        fetchExpenses(); // refresh UI
       })
       .catch((err) => console.log(err));
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-
-    window.location.href = "/";
   };
 
   return (
